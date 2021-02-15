@@ -13,15 +13,10 @@ validate +exit
 # e.g. docker run -v /path/to/host/directory:/home/steam/valheim-data
 ENV VALHEIM_DATA_DIR "/home/steam/valheim-data"
 # don't change the port unless you know what you are doing
-ENV VALHEIM_PORT 2456
-## default server parameters, change these when running with --env command
-#ENV VALHEIM_SERVER_NAME "Default Server Name"
-## world name is truncated after 1st white space
-#ENV VALHEIM_WORLD_NAME "DefaultWorldName"
-#ENV VALHEIM_PASSWORD "password"
-
+ENV VALHEIM_PORT 2456"
+# server and world name are truncated after 1st white space
+# you must set values to the server and world name otherwise the container will exit immediately
 ENV VALHEIM_SERVER_NAME=""
-# world name is truncated after 1st white space
 ENV VALHEIM_WORLD_NAME=""
 ENV VALHEIM_PASSWORD "password"
 
