@@ -6,20 +6,20 @@ Note you will still need to forward and open ports 2456, 2457, and 2458 (UDP pro
 
 If you find this repo useful, I'd love to hear back in a note how you're using it.  If you use this repo to build on your own work, please provide a reference back to this repo's URL.  
 
-## How to build the image
-
-Clone the repository and cd into the repo, then run `docker build`:
-
-```bash
-docker build -t sethmachine/valheim-server .
-```
+Built images are provided on Docker Hub: [sethmachineio/valheim-server:latest](https://hub.docker.com/repository/docker/sethmachineio/valheim-server)
 
 ## Usage
 
-You'll need to mount a directory on the host machine to the image's volume specified as `/home/steam/valheim-data`.  This is the mechanism by which world data is persisted even if the container is stopped, and also allows you to use existing worlds.  The structure of the host directory (`/home/sethmachine/valeim-data`) should look like this:
+Pull the latest image using Docker:
 
 ```bash
-/home/sethmachine/valeim-data
+docker pull sethmachineio/valheim-server:latest
+```
+
+You'll need to mount a directory on the host machine to the image's volume specified as `/home/steam/valheim-data`.  This is the mechanism by which world data is persisted even if the container is stopped, and also allows you to use existing worlds.  The structure of the host directory (`/home/sethmachine/valheim-data`) should look like this:
+
+```bash
+/home/sethmachine/valheim-data
 └── worlds
     ├── OldWorld.db
     └── OldWorld.fwl
@@ -29,8 +29,8 @@ The subdirectory `worlds` can be empty or not exist at all.
 
 There are 4 environment parameters to customize the server's runtime behavior.  2 of these are required to be set, otherwise the container will exit immediately.  
 
-* `VALHEIM_SERVER_NAME`: sets the server's name (**required**).
-* `VALHEIM_WORLD_NAME`: sets the world's name (**required**).
+* `VALHEIM_SERVER_NAME`: sets the server's name (**required**, truncated at first whitespace).
+* `VALHEIM_WORLD_NAME`: sets the world's name (**required**, truncated at first whitespace).
 * `VALHEIM_PASSWORD`: sets the server's password.
 * `VALHEIM_PORT`: sets the server's port (default is `2456`).  Recommended not to change this.  
 
@@ -39,11 +39,12 @@ Below is an example command to run the server as a Docker container that restart
 ```bash
 docker run --name=valheim -d \
 --restart always \
--v /home/sethmachine/valeim-data:/home/steam/valheim-data \
---env VALHEIM_SERVER_NAME="sethmachine's server" \
+-p 2456:2456/udp -p 2456:2456/udp -p 2456:2456/udp \
+-v /home/sethmachine/valheim-data:/home/steam/valheim-data \
+--env VALHEIM_SERVER_NAME="sethmachine'sServer" \
 --env VALHEIM_WORLD_NAME="AWholeNewWorld" \
 --env VALHEIM_PASSWORD="HardToGuessPassword" \
-sethmachine/valheim-server
+sethmachineio/valheim-server
 ```
 
 After running for the 1st time, the banlist, permitted list, and admin list will be created if they do not already exist in the host's directory.  There will also be a world specific log file.  
@@ -84,7 +85,7 @@ Valheim server PID is: 7
 Access world specific Valheim logs from the \<WorldName\>-logs.txt created in the host's directory:
 
 ```bash
-sethmachine valheim-server-docker % tail -f /home/sethmachine/valeim-data/AWholeNewWorld-logs.txt
+sethmachine valheim-server-docker % tail -f /home/sethmachine/valheim-data/AWholeNewWorld-logs.txt
 (Filename: ./Runtime/Export/Debug/Debug.bindings.h Line: 35)
 
 02/15/2021 04:19:30: Net scene destroyed
@@ -96,8 +97,13 @@ sethmachine valheim-server-docker % tail -f /home/sethmachine/valeim-data/AWhole
 (Filename: ./Runtime/Export/Debug/Debug.bindings.h Line: 35)
 ```
 
+## How to build the image
 
+Clone the repository and cd into the repo, then run `docker build`:
 
+```bash
+docker build -t sethmachineio/valheim-server .
+```
 
 
 

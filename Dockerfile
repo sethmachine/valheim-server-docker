@@ -9,10 +9,6 @@ RUN ./steamcmd.sh +login anonymous \
 +app_update 896660 \
 validate +exit
 
-USER root
-RUN apt-get update && apt-get install -y procps
-USER steam
-
 # where world data is stored, map this to the host directory where your worlds are stored
 # e.g. docker run -v /path/to/host/directory:/home/steam/valheim-data
 ENV VALHEIM_DATA_DIR "/home/steam/valheim-data"
