@@ -1,0 +1,38 @@
+FROM cm2network/steamcmd
+
+# where the Valheim server is installed to
+ENV VALHEIM_SERVER_DIR "/home/steam/valheim-server"
+
+# install the Valheim server
+RUN ./steamcmd.sh +login anonymous \
++force_install_dir $VALHEIM_SERVER_DIR \
++app_update 896660 \
+validate +exit
+
+USER root
+RUN apt-get update && apt-get install -y procps
+USER steam
+
+# where server configuration and world data is stored
+# when running the container, map this onto the host machine's directory where your worlds are stored
+ENV VALHEIM_DATA_DIR "/home/steam/valheim-data"
+# default server parameters, change these when running with --env command
+ENV VALHEIM_PORT 2456
+ENV VALHEIM_SERVER_NAME "Default Server Name"
+# world name is truncated after 1st white space
+ENV VALHEIM_WORLD_NAME "DefaultWorldName"
+ENV VALHEIM_PASSWORD "password"
+
+# the server needs these 3 ports exposed by default
+EXPOSE 2456/udp
+EXPOSE 2457/udp
+EXPOSE 2458/udp
+
+VOLUME ${VALHEIM_DATA_DIR}
+
+# copy over the modified server start script
+COPY start-valheim-server.sh ${VALHEIM_SERVER_DIR}
+WORKDIR ${VALHEIM_SERVER_DIR}
+
+ENTRYPOINT ["./start-valheim-server.sh"]
+
