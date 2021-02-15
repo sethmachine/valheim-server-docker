@@ -13,14 +13,20 @@ USER root
 RUN apt-get update && apt-get install -y procps
 USER steam
 
-# where server configuration and world data is stored
-# when running the container, map this onto the host machine's directory where your worlds are stored
+# where world data is stored, map this to the host directory where your worlds are stored
+# e.g. docker run -v /path/to/host/directory:/home/steam/valheim-data
 ENV VALHEIM_DATA_DIR "/home/steam/valheim-data"
-# default server parameters, change these when running with --env command
+# don't change the port unless you know what you are doing
 ENV VALHEIM_PORT 2456
-ENV VALHEIM_SERVER_NAME "Default Server Name"
+## default server parameters, change these when running with --env command
+#ENV VALHEIM_SERVER_NAME "Default Server Name"
+## world name is truncated after 1st white space
+#ENV VALHEIM_WORLD_NAME "DefaultWorldName"
+#ENV VALHEIM_PASSWORD "password"
+
+ENV VALHEIM_SERVER_NAME=""
 # world name is truncated after 1st white space
-ENV VALHEIM_WORLD_NAME "DefaultWorldName"
+ENV VALHEIM_WORLD_NAME=""
 ENV VALHEIM_PASSWORD "password"
 
 # the server needs these 3 ports exposed by default
