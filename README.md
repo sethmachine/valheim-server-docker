@@ -6,7 +6,7 @@ Note you will still need to forward and open ports 2456, 2457, and 2458 (UDP pro
 
 If you find this repo useful, I'd love to hear back in a note how you're using it.  If you use this repo to build on your own work, please provide a reference back to this repo's URL.  
 
-Built images are provided on Docker Hub: [sethmachineio/valheim-server:latest](https://hub.docker.com/repository/docker/sethmachineio/valheim-server)
+Built images are provided on Docker Hub: [sethmachineio/valheim-server:latest](https://hub.docker.com/r/sethmachineio/valheim-server)
 
 I also have written a complete guide here that covers how to set up your own dedicated server at home: [Valheim Dedicated Server at Home Guide](https://sethmachine.gitlab.io/2021/02/11/host-valheim-with-docker/). 
 
