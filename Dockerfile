@@ -1,4 +1,4 @@
-FROM cm2network/steamcmd
+FROM cm2network/steamcmd:latest
 
 # where the Valheim server is installed to
 ENV VALHEIM_SERVER_DIR "/home/steam/valheim-server"
