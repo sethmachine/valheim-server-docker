@@ -41,7 +41,7 @@ Below is an example command to run the server as a Docker container that restart
 ```bash
 docker run --name=valheim -d \
 --restart always \
--p 2456:2456/udp -p 2456:2456/udp -p 2456:2456/udp \
+-p 2456:2456/udp -p 2457:2457/udp -p 2458:2458/udp \
 -v /home/sethmachine/valheim-data:/home/steam/valheim-data \
 --env VALHEIM_SERVER_NAME="sethmachine'sServer" \
 --env VALHEIM_WORLD_NAME="AWholeNewWorld" \
