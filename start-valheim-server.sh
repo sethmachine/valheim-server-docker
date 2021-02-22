@@ -51,4 +51,4 @@ VALHEIM_PID=$!
 echo "Valheim server PID is: $VALHEIM_PID"
 
 # since the server is run in the background, this is needed to keep the main process from exiting
-while true; do :; done
+while wait $!; [ $? != 0 ]; do true; done
