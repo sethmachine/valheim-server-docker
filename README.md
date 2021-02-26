@@ -107,6 +107,13 @@ Clone the repository and cd into the repo, then run `docker build`:
 docker build -t sethmachineio/valheim-server .
 ```
 
+If you build the image locally and then Valheim updates its server, rebuilding the image won't update to the new server, as Docker will still use the cache as it has no idea Valheim updated the server.  To force re-downloading the latest server, use the `--no-cache` option when building the Docker image, e.g.:
+
+```bash
+docker build -t sethmachineio/valheim-server --no-cache .
+```
+
+
 ## Known Issues
 
 * The server does not update itself automatically.  When Valheim releases a new client/server, they don't appear to be backwards compatible, so once a player updates their game, they may not be able to join the server.  The work around is to manually trigger a rebuild of the Docker image, stop the server, delete the container, pull the image again, and then re-run the server.  In future I'll add support for automatic updates so you don't have to do this manual process.   
