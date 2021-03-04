@@ -9,6 +9,7 @@ RUN ./steamcmd.sh +login anonymous \
 +app_update 896660 \
 validate +exit
 
+# changes the uuid and guid to 1000:1000, allowing for the files to save on GNU/Linux
 USER 1000:1000
 
 # where world data is stored, map this to the host directory where your worlds are stored
