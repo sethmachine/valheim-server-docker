@@ -1,16 +1,44 @@
 # valheim-server-docker
 
-This repo provides a Dockerfile that builds an image which runs a Valheim server.  Using Docker allows for running the server on most operating systems, including macOS (which is not supported by the Valheim game at all).  The custom server start script `start-valheim-server.sh` provides a mechanism to gracefully shut down a running Valheim server when using `docker stop`.  This is necessary so world data is properly saved back to disk.  
+This repo provides a Dockerfile that builds an image which runs a Valheim server.  Using Docker allows for running the server on most operating systems, including macOS (which is not supported by the Valheim game at all).  The custom server start script `start-valheim-server.sh` provides a mechanism to gracefully shut down a running Valheim server when using `docker stop`.  This is necessary so world data is properly saved back to disk.
 
-Note you will still need to forward and open ports 2456, 2457, and 2458 (UDP protocol) on the host machine for the server to be listed and accessible.  
+Note you will still need to forward and open ports 2456, 2457, and 2458 (UDP protocol) on the host machine for the server to be listed and accessible.
 
-If you find this repo useful, I'd love to hear back in a note how you're using it.  If you use this repo to build on your own work, please provide a reference back to this repo's URL.  
+If you find this repo useful, I'd love to hear back in a note how you're using it.  If you use this repo to build on your own work, please provide a reference back to this repo's URL.
 
 Built images are provided on Docker Hub: [sethmachineio/valheim-server:latest](https://hub.docker.com/r/sethmachineio/valheim-server)
 
-I also have written a complete guide here that covers how to set up your own dedicated server at home: [Valheim Dedicated Server at Home Guide](https://sethmachine.gitlab.io/2021/02/11/host-valheim-with-docker/). 
+I also have written a complete guide here that covers how to set up your own dedicated server at home: [Valheim Dedicated Server at Home Guide](https://sethmachine.gitlab.io/2021/02/11/host-valheim-with-docker/).
 
 ## Usage
+
+You have two possibilities to run the container:
+
+- Docker CLI
+
+- Docker Compose
+
+When wanting to save your configuration easily, for the sake of backups,
+easier editing, or transport, use `docker-compose`.
+
+### Docker Compose
+
+Clone the repo, edit the `docker-compose.yml` to your liking, and run
+the container in the background using `docker-compose up -d`. In order
+to stop the container, run `docker-compose down`. Remember to restart
+your container after editing the config.
+
+| **Variables**               | **Possible Values**                       | **Default**                |
+|-----------------------------|-------------------------------------------|----------------------------|
+| `user`                      | Any UUID and GUID                         | 1000:1000                  |
+| `ports`                     | Any port, keep default internal ports     | Same internal and external |
+| `volumes`                   | Any path on your local system             | `./valheim-data`           |
+| `VALHEIM_SERVER_NAME`       | Any string                                | "MyServer"                 |
+| `VALHEIM_WORLD_NAME`        | Any string                                | "NewWorld"                 |
+| `VALHEIM_PASSWORD`          | Any string                                | "password"                 |
+
+
+### Docker CLI
 
 Pull the latest image using Docker:
 
@@ -27,14 +55,14 @@ You'll need to mount a directory on the host machine to the image's volume speci
     └── OldWorld.fwl
 ```
 
-The subdirectory `worlds` can be empty or not exist at all.  
+The subdirectory `worlds` can be empty or not exist at all.
 
-There are 4 environment parameters to customize the server's runtime behavior.  2 of these are required to be set, otherwise the container will exit immediately.  
+There are 4 environment parameters to customize the server's runtime behavior.  2 of these are required to be set, otherwise the container will exit immediately.
 
 * `VALHEIM_SERVER_NAME`: sets the server's name (**required**, truncated at first whitespace).
 * `VALHEIM_WORLD_NAME`: sets the world's name (**required**, truncated at first whitespace).
 * `VALHEIM_PASSWORD`: sets the server's password.
-* `VALHEIM_PORT`: sets the server's port (default is `2456`).  Recommended not to change this.  
+* `VALHEIM_PORT`: sets the server's port (default is `2456`).  Recommended not to change this.
 
 Below is an example command to run the server as a Docker container that restarts automatically whenever it is stopped:
 
@@ -49,7 +77,7 @@ docker run --name=valheim -d \
 sethmachineio/valheim-server
 ```
 
-After running for the 1st time, the banlist, permitted list, and admin list will be created if they do not already exist in the host's directory.  There will also be a world specific log file.  
+After running for the 1st time, the banlist, permitted list, and admin list will be created if they do not already exist in the host's directory.  There will also be a world specific log file.
 
 ```bash
 ├── AWholeNewWorld-logs.txt
@@ -70,7 +98,7 @@ Explanation:
 
 ## Logs
 
-Two different logs are provided: from the custom start script and from Valheim specific logging.  
+Two different logs are provided: from the custom start script and from Valheim specific logging.
 
 Access the custom start script log by running `docker logs <containerID>`:
 
@@ -91,11 +119,11 @@ sethmachine valheim-server-docker % tail -f /home/sethmachine/valheim-data/AWhol
 (Filename: ./Runtime/Export/Debug/Debug.bindings.h Line: 35)
 
 02/15/2021 04:19:30: Net scene destroyed
- 
+
 (Filename: ./Runtime/Export/Debug/Debug.bindings.h Line: 35)
 
 02/15/2021 04:19:30: Steam manager on destroy
- 
+
 (Filename: ./Runtime/Export/Debug/Debug.bindings.h Line: 35)
 ```
 
@@ -116,7 +144,4 @@ docker build -t sethmachineio/valheim-server --no-cache .
 
 ## Known Issues
 
-* The server does not update itself automatically.  When Valheim releases a new client/server, they don't appear to be backwards compatible, so once a player updates their game, they may not be able to join the server.  The work around is to manually trigger a rebuild of the Docker image, stop the server, delete the container, pull the image again, and then re-run the server.  In future I'll add support for automatic updates so you don't have to do this manual process.   
-
-
-  
+* The server does not update itself automatically.  When Valheim releases a new client/server, they don't appear to be backwards compatible, so once a player updates their game, they may not be able to join the server.  The work around is to manually trigger a rebuild of the Docker image, stop the server, delete the container, pull the image again, and then re-run the server.  In future I'll add support for automatic updates so you don't have to do this manual process.
