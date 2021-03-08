@@ -9,6 +9,7 @@ services:
       - 2458:2458
     volumes:
       - ./valheim-data:/home/steam/valheim-data
+      - ./valheim-server:/home/steam/valheim-server
     environment:
       - VALHEIM_SERVER_NAME="MyServer"
       - VALHEIM_WORLD_NAME="NewWorld"

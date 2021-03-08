@@ -39,6 +39,11 @@ echo "Valheim port is: $VALHEIM_PORT"
 echo "Valheim server name is: $VALHEIM_SERVER_NAME"
 echo "Valheim world name is: $VALHEIM_WORLD_NAME"
 
+steamcmd/steamcmd.sh +login anonymous \
++force_install_dir $VALHEIM_SERVER_DIR \
++app_update 896660 \
+validate +exit > "/home/steam/valheim-data/steamcmd_log.txt"
+
 cd $VALHEIM_SERVER_DIR
 # start the server as a background process to get its PID ("&" at end of command)
 # "&>>" means append all stdout and stderr to the log file
