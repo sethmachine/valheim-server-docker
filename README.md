@@ -34,9 +34,9 @@ your container after editing the config.
 | `ports`                     | Any port, keep default internal ports     | Same internal and external             |
 | `volumes`: 'valheim-data'   | Any path on your local system             | `./valheim-data`                       |
 | `volumes`: 'valheim-server' | Any path on your local system             | `./valheim-server`                     |
-| `VALHEIM_SERVER_NAME`       | Any string                                | "MyServer"                             |
-| `VALHEIM_WORLD_NAME`        | Any string                                | "NewWorld"                             |
-| `VALHEIM_PASSWORD`          | Any string                                | "password"                             |
+| `VALHEIM_SERVER_NAME`       | Any string                                | MyServer                               |
+| `VALHEIM_WORLD_NAME`        | Any string                                | NewWorld                               |
+| `VALHEIM_PASSWORD`          | Any string                                | password                               |
 | `VALHEIM_PUBLIC`            | 0 or 1 (0 = server will not be listed)    | 1 (means server will be listed ingame) |
 
 

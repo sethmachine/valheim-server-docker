@@ -11,7 +11,7 @@ services:
       - ./valheim-data:/home/steam/valheim-data
       - ./valheim-server:/home/steam/valheim-server
     environment:
-      - VALHEIM_SERVER_NAME="MyServer"
-      - VALHEIM_WORLD_NAME="NewWorld"
-      - VALHEIM_PASSWORD="password"
+      - VALHEIM_SERVER_NAME=MyServer
+      - VALHEIM_WORLD_NAME=NewWorld
+      - VALHEIM_PASSWORD=password
       - VALHEIM_PUBLIC=1
