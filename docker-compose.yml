@@ -14,3 +14,4 @@ services:
       - VALHEIM_SERVER_NAME="MyServer"
       - VALHEIM_WORLD_NAME="NewWorld"
       - VALHEIM_PASSWORD="password"
+      - VALHEIM_PUBLIC=1
