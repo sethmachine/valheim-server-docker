@@ -8,7 +8,7 @@ If you find this repo useful, I'd love to hear back in a note how you're using i
 
 Built images are provided on Docker Hub: [sethmachineio/valheim-server:latest](https://hub.docker.com/r/sethmachineio/valheim-server)
 
-I also have written a complete guide here that covers how to set up your own dedicated server at home: [Valheim Dedicated Server at Home Guide](https://sethmachine.gitlab.io/2021/02/11/host-valheim-with-docker/).
+I also have written a complete guide here that covers how to set up your own dedicated server at home: [Valheim Dedicated Server at Home Guide](https://www.sethmachine.io/2021/02/11/host-valheim-with-docker/).
 
 ## Usage
 
