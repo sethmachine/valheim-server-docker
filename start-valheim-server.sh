@@ -46,6 +46,7 @@ validate +exit > "/home/steam/valheim-data/steamcmd_log.txt"
 
 cd $VALHEIM_SERVER_DIR
 
+# Write the commandline, that will be executed to start the server, into the file "valheim-data/call.txt". Just for potential debugging purposes.
 echo ./valheim_server.x86_64 -name $VALHEIM_SERVER_NAME -port $VALHEIM_PORT -world $VALHEIM_WORLD_NAME -password $VALHEIM_PASSWORD -savedir $VALHEIM_DATA_DIR > "/home/steam/valheim-data/call.txt"
 
 # start the server as a background process to get its PID ("&" at end of command)
