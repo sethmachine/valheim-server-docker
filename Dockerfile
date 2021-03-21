@@ -1,11 +1,13 @@
 FROM cm2network/steamcmd:latest
 
-
-# where the Valheim server is installed to
-ENV STEAM_HOME_DIR "/home/steam"
-
 # where the Valheim server is installed to
 ENV VALHEIM_SERVER_DIR "/home/steam/valheim-server"
+
+# install the Valheim server
+RUN ./steamcmd.sh +login anonymous \
++force_install_dir $VALHEIM_SERVER_DIR \
++app_update 896660 \
+validate +exit
 
 # changes the uuid and guid to 1000:1000, allowing for the files to save on GNU/Linux
 USER 1000:1000
@@ -27,10 +29,9 @@ EXPOSE 2457/udp
 EXPOSE 2458/udp
 
 VOLUME ${VALHEIM_DATA_DIR}
-VOLUME ${VALHEIM_SERVER_DIR}
 
 # copy over the modified server start script
-COPY start-valheim-server.sh ${STEAM_HOME_DIR}
-WORKDIR ${STEAM_HOME_DIR}
+COPY start-valheim-server.sh ${VALHEIM_SERVER_DIR}
+WORKDIR ${VALHEIM_SERVER_DIR}
 
 ENTRYPOINT ["./start-valheim-server.sh"]
