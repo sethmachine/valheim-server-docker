@@ -39,7 +39,16 @@ echo "Valheim port is: $VALHEIM_PORT"
 echo "Valheim server name is: $VALHEIM_SERVER_NAME"
 echo "Valheim world name is: $VALHEIM_WORLD_NAME"
 
+steamcmd/steamcmd.sh +login anonymous \
++force_install_dir $VALHEIM_SERVER_DIR \
++app_update 896660 \
+validate +exit > "/home/steam/valheim-data/steamcmd_log.txt"
+
 cd $VALHEIM_SERVER_DIR
+
+# Write the commandline, that will be executed to start the server, into the file "valheim-data/call.txt". Just for potential debugging purposes.
+echo ./valheim_server.x86_64 -name $VALHEIM_SERVER_NAME -port $VALHEIM_PORT -world $VALHEIM_WORLD_NAME -password $VALHEIM_PASSWORD -savedir $VALHEIM_DATA_DIR > "/home/steam/valheim-data/call.txt"
+
 # start the server as a background process to get its PID ("&" at end of command)
 # "&>>" means append all stdout and stderr to the log file
 ./valheim_server.x86_64 -name $VALHEIM_SERVER_NAME \
