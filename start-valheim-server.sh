@@ -38,6 +38,7 @@ echo "LD_LIBRARY_PATH: $LD_LIBRARY_PATH"
 echo "Valheim port is: $VALHEIM_PORT"
 echo "Valheim server name is: $VALHEIM_SERVER_NAME"
 echo "Valheim world name is: $VALHEIM_WORLD_NAME"
+echo "Valheim server is public: $VALHEIM_PUBLIC"
 
 steamcmd/steamcmd.sh +login anonymous \
 +force_install_dir $VALHEIM_SERVER_DIR \
@@ -52,6 +53,7 @@ echo ./valheim_server.x86_64 -name $VALHEIM_SERVER_NAME -port $VALHEIM_PORT -wor
 # start the server as a background process to get its PID ("&" at end of command)
 # "&>>" means append all stdout and stderr to the log file
 ./valheim_server.x86_64 -name $VALHEIM_SERVER_NAME \
+-public $VALHEIM_PUBLIC \
 -port $VALHEIM_PORT \
 -world $VALHEIM_WORLD_NAME \
 -password $VALHEIM_PASSWORD \

@@ -28,15 +28,16 @@ the container in the background using `docker-compose up -d`. In order
 to stop the container, run `docker-compose down`. Remember to restart
 your container after editing the config.
 
-| **Variables**               | **Possible Values**                       | **Default**                |
-|-----------------------------|-------------------------------------------|----------------------------|
-| `user`                      | Any UUID and GUID                         | 1000:1000                  |
-| `ports`                     | Any port, keep default internal ports     | Same internal and external |
-| `volumes`: 'valheim-data'   | Any path on your local system             | `./valheim-data`           |
-| `volumes`: 'valheim-server' | Any path on your local system             | `./valheim-server`         |
-| `VALHEIM_SERVER_NAME`       | Any string                                | MyServer                 |
-| `VALHEIM_WORLD_NAME`        | Any string                                | NewWorld                 |
-| `VALHEIM_PASSWORD`          | Any string                                | password                 |
+| **Variables**               | **Possible Values**                       | **Default**                            |
+|-----------------------------|-------------------------------------------|----------------------------------------|
+| `user`                      | Any UUID and GUID                         | 1000:1000                              |
+| `ports`                     | Any port, keep default internal ports     | Same internal and external             |
+| `volumes`: 'valheim-data'   | Any path on your local system             | `./valheim-data`                       |
+| `volumes`: 'valheim-server' | Any path on your local system             | `./valheim-server`                     |
+| `VALHEIM_SERVER_NAME`       | Any string                                | MyServer                               |
+| `VALHEIM_WORLD_NAME`        | Any string                                | NewWorld                               |
+| `VALHEIM_PASSWORD`          | Any string                                | password                               |
+| `VALHEIM_PUBLIC`            | 0 or 1 (0 = server will not be listed)    | 1 (means server will be listed ingame) |
 
 
 ### Docker CLI
@@ -58,12 +59,13 @@ You'll need to mount a directory on the host machine to the image's volume speci
 
 The subdirectory `worlds` can be empty or not exist at all.
 
-There are 4 environment parameters to customize the server's runtime behavior.  2 of these are required to be set, otherwise the container will exit immediately.
+There are 5 environment parameters to customize the server's runtime behavior.  2 of these are required to be set, otherwise the container will exit immediately.
 
 * `VALHEIM_SERVER_NAME`: sets the server's name (**required**, truncated at first whitespace).
 * `VALHEIM_WORLD_NAME`: sets the world's name (**required**, truncated at first whitespace).
 * `VALHEIM_PASSWORD`: sets the server's password.
 * `VALHEIM_PORT`: sets the server's port (default is `2456`).  Recommended not to change this.
+* `VALHEIM_PUBLIC`: Specify, if the server should be listed ingame in Valheim's server list. (0 means it will not be listed; 1 means it will be listed)
 
 Below is an example command to run the server as a Docker container that restarts automatically whenever it is stopped:
 
@@ -76,6 +78,7 @@ docker run --name=valheim -d \
 --env VALHEIM_SERVER_NAME="sethmachine'sServer" \
 --env VALHEIM_WORLD_NAME="AWholeNewWorld" \
 --env VALHEIM_PASSWORD="HardToGuessPassword" \
+--env VALHEIM_PUBLIC=1 \
 sethmachineio/valheim-server
 ```
 
