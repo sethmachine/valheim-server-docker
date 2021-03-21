@@ -20,7 +20,6 @@ ENV VALHEIM_PORT 2456
 ENV VALHEIM_SERVER_NAME=""
 ENV VALHEIM_WORLD_NAME=""
 ENV VALHEIM_PASSWORD "password"
-ENV VALHEIM_PUBLIC 1
 
 # the server needs these 3 ports exposed by default
 EXPOSE 2456/udp
