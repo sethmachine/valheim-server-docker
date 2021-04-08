@@ -2,21 +2,23 @@ FROM cm2network/steamcmd:latest
 
 # Install Python to allow parsing VDF format (https://developer.valvesoftware.com/wiki/KeyValues)
 # Python VDF parser: https://github.com/ValvePython/vdf
-#USER root
+USER root
+RUN apt-get update && apt-get install pcregrep -y
 #RUN apt-get update && apt-get install python3-pip -y && pip3 install vdf
 
 # where Steam is installed
-ENV STEAM_SERVER_DIR = "/home/steam/Steam"
+ENV STEAM_DIR "/home/steam/Steam"
 # where steamcmd is installed
-ENV STEAM_CMD_DIR = "/home/steam/steamcmd"
+ENV STEAMCMD_DIR "/home/steam/steamcmd"
 # where the Valheim server is installed to
 ENV VALHEIM_SERVER_DIR "/home/steam/valheim-server"
 
 # install the Valheim server
-RUN ./steamcmd.sh +login anonymous \
-+force_install_dir $VALHEIM_SERVER_DIR \
-+app_update 896660 \
-validate +exit
+COPY dev/valheim-server ${VALHEIM_SERVER_DIR}
+#RUN ./steamcmd.sh +login anonymous \
+#+force_install_dir $VALHEIM_SERVER_DIR \
+#+app_update 896660 \
+#validate +exit
 
 # changes the uuid and guid to 1000:1000, allowing for the files to save on GNU/Linux
 USER 1000:1000
