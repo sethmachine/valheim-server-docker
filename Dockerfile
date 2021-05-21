@@ -26,6 +26,7 @@ RUN cd ${STEAM_DIR} && git clone https://github.com/idelsink/b-log.git && apt-ge
 # changes the uuid and guid to 1000:1000, allowing for the files to save on GNU/Linux
 USER steam
 
+# install the Valheim server
 RUN ./steamcmd.sh +login anonymous \
 +force_install_dir $VALHEIM_SERVER_DIR \
 +app_update $VALHEIM_SERVER_APP_ID \
