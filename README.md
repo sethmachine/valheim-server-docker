@@ -198,4 +198,5 @@ At some point the server will stop itself, update, and restart when a new update
 
 If you need to execute a manual update sooner than the auto update, simple stop the container and then start it again.  Make sure `VALHEIM_SERVER_UPDATE_ON_START_UP` is set to 1.  Starting it again will trigger a check for an update immediately.  
 
+
 ## Known Issues / FAQ
