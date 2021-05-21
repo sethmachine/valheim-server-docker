@@ -64,6 +64,21 @@ There are 4 environment parameters to customize the server's runtime behavior.  
 * `VALHEIM_PASSWORD`: sets the server's password.
 * `VALHEIM_PORT`: sets the server's port (default is `2456`).  Recommended not to change this.
 
+Auto update example:
+
+```bash
+docker run --name=valheim-server -d \
+-v /Users/sdworman/valheim-data:/home/steam/valheim-data \
+--env VALHEIM_SERVER_NAME="OutdatedServer" \
+--env VALHEIM_WORLD_NAME="OutdatedWorld" \
+--env VALHEIM_PASSWORD="HardToGuessPassword" \
+--env VALHEIM_PUBLIC=1 \
+--env VALHEIM_SERVER_UPDATE_ON_START_UP=1 \
+--env VALHEIM_SERVER_AUTO_UPDATE=1 \
+--env VALHEIM_SERVER_AUTO_UPDATE_FREQUENCY=30m \
+valheim/auto-update
+```
+
 Below is an example command to run the server as a Docker container that restarts automatically whenever it is stopped:
 
 ```bash
