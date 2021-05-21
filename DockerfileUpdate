@@ -1,16 +1,9 @@
 FROM cm2network/steamcmd:latest
 
-# Install Python to allow parsing VDF format (https://developer.valvesoftware.com/wiki/KeyValues)
-# Python VDF parser: https://github.com/ValvePython/vdf
 USER root
 # Install PCREGREP (http://www.pcre.org/) to extract build IDs from the VDF format
-# PCREGREP allows for writing easy to understand regular expressions that can span many lines
-RUN apt-get update && apt-get install pcregrep -y && apt-get install -y procps
-#RUN apt-get update && apt-get install python3-pip -y && pip3 install vdf
-
-# changes the uuid and guid to 1000:1000, allowing for the files to save on GNU/Linux
-#USER 1000:1000
-USER steam
+# PCREGREP allows for writing easy to understand regular expressions that can span multiple lines
+RUN apt-get update && apt-get install pcregrep -y && apt-get install -y procps && apt-get install git -y
 
 # where Steam is installed
 ENV STEAM_DIR "/home/steam/Steam"
@@ -20,11 +13,18 @@ ENV STEAMCMD_DIR "/home/steam/steamcmd"
 ENV VALHEIM_SERVER_DIR "/home/steam/valheim-server"
 # the Steam app ID that uniquely identifies the server
 ENV VALHEIM_SERVER_APP_ID 896660
+# 1 enables a one time check to update the Valheim server whenever it is first started
+ENV VALHEIM_SERVER_UPDATE_ON_START_UP 1
 # 1 enables auto update; set to 0 to disable auto update
-ENV VALHEIM_SERVER_AUTO_UPDATE 0
+ENV VALHEIM_SERVER_AUTO_UPDATE 1
 # how often to check for server updates
 # For format: https://linuxize.com/post/how-to-use-linux-sleep-command-to-pause-a-bash-script/
 ENV VALHEIM_SERVER_AUTO_UPDATE_FREQUENCY "30m"
+
+RUN cd ${STEAM_DIR} && git clone https://github.com/idelsink/b-log.git && apt-get remove git -y && chown -R steam:steam b-log/
+
+# changes the uuid and guid to 1000:1000, allowing for the files to save on GNU/Linux
+USER steam
 
 # install the Valheim server
 COPY --chown=steam dev/valheim-server ${VALHEIM_SERVER_DIR}
@@ -43,6 +43,8 @@ ENV VALHEIM_PORT 2456
 ENV VALHEIM_SERVER_NAME=""
 ENV VALHEIM_WORLD_NAME=""
 ENV VALHEIM_PASSWORD "password"
+# 1 allows viewing the server in the public list; 0 hides it (must join by IP)
+ENV VALHEIM_SERVER_PUBLIC 1
 
 # the server needs these 3 ports exposed by default
 EXPOSE 2456/udp

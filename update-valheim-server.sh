@@ -105,6 +105,7 @@ function checkForAndUpdateValheimServer(){
 function startServerAndUpdateLoop(){
     trap 'shutdownValheimServerAndExit' SIGTERM
     startValheimServer
+
     while true
     do
         INFO "Sleeping for $VALHEIM_SERVER_AUTO_UPDATE_FREQUENCY before checking for Valheim server update"
