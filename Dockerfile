@@ -3,7 +3,7 @@ FROM cm2network/steamcmd:latest
 USER root
 # Install PCREGREP (http://www.pcre.org/) to extract build IDs from the VDF format
 # PCREGREP allows for writing easy to understand regular expressions that can span multiple lines
-RUN apt-get update && apt-get install pcregrep -y && apt-get install -y procps && apt-get install git -y
+RUN apt-get update && apt-get install pcregrep -y && apt-get install git -y
 
 # where Steam is installed
 ENV STEAM_DIR "/home/steam/Steam"
