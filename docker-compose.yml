@@ -2,18 +2,18 @@ version: "3"
 services:
   valheim:
     image: sethmachineio/valheim-server
-    user: "1000:1000"
+    user: 1000:1000
     ports:
-      - 2456:2456
-      - 2457:2457
-      - 2458:2458
+      - 2456:2456/udp
+      - 2457:2457/udp
+      - 2458:2458/udp
     volumes:
       - ./valheim-data:/home/steam/valheim-data
     environment:
-      - VALHEIM_SERVER_NAME="MyServer"
-      - VALHEIM_WORLD_NAME="NewWorld"
-      - VALHEIM_PASSWORD="password"
+      - VALHEIM_SERVER_NAME=MyServer
+      - VALHEIM_WORLD_NAME=NewWorld
+      - VALHEIM_PASSWORD=password
       - VALHEIM_SERVER_PUBLIC=1
       - VALHEIM_SERVER_UPDATE_ON_START_UP=1
       - VALHEIM_SERVER_AUTO_UPDATE=1
-      - VALHEIM_SERVER_AUTO_UPDATE_FREQUENCY="30m"
+      - VALHEIM_SERVER_AUTO_UPDATE_FREQUENCY=30m
