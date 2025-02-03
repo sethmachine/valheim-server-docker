@@ -13,6 +13,7 @@ ENV STEAMCMD_DIR "/home/steam/steamcmd"
 ENV VALHEIM_SERVER_DIR "/home/steam/valheim-server"
 # where the Valheim server is installed to
 ENV BEPINEX_PLUGINS_DIR "/home/steam/valheim-server/BepInEx/plugins"
+ENV BEPINEX_CONFIG_DIR "/home/steam/valheim-server/BepInEx/config"
 # the Steam app ID that uniquely identifies the server
 ENV VALHEIM_SERVER_APP_ID 896660
 # 1 enables a one time check to update the Valheim server whenever it is first started

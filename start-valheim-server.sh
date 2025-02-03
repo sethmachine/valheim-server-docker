@@ -25,6 +25,7 @@ function startValheimServer()
     fi
 
     cp $VALHEIM_DATA_DIR/plugins/* $BEPINEX_PLUGINS_DIR
+    cp $VALHEIM_DATA_DIR/config/* $BEPINEX_CONFIG_DIR
 
     EXECUTABLE="./valheim_server.x86_64"
 
