@@ -62,6 +62,7 @@ EXPOSE 2457/udp
 EXPOSE 2458/udp
 
 VOLUME ${VALHEIM_DATA_DIR}
+VOLUME ${BEPINEX_PLUGINS_DIR}
 
 # copy over the scripts to start, update, and shutdown the server
 COPY --chown=steam valheim-server-entrypoint.sh ${VALHEIM_SERVER_DIR}
