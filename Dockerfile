@@ -37,7 +37,7 @@ validate +exit
 # copy bepinex to the server root
 RUN cd $VALHEIM_SERVER_DIR && \
 curl -O https://gcdn.thunderstore.io/live/repository/packages/denikson-BepInExPack_Valheim-5.4.2202.zip && \
-unzip -d denikson-BepInExPack_Valheim-5.4.2202.zip bepinex-valheim && mv bepinex-valheim/BepInExPack_Valheim/* .
+unzip denikson-BepInExPack_Valheim-5.4.2202.zip -d bepinex-valheim && mv bepinex-valheim/BepInExPack_Valheim/* .
 
 RUN chmod u+x $VALHEIM_SERVER_DIR/start_server_bepinex.sh
 
