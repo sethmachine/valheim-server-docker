@@ -3,7 +3,7 @@ FROM cm2network/steamcmd:latest
 USER root
 # Install PCREGREP (http://www.pcre.org/) to extract build IDs from the VDF format
 # PCREGREP allows for writing easy to understand regular expressions that can span multiple lines
-RUN apt-get update && apt-get install pcregrep -y && apt-get install git -y
+RUN apt-get update && apt-get install pcregrep -y && apt-get install git -y && apt-get install unzip
 
 # where Steam is installed
 ENV STEAM_DIR "/home/steam/Steam"
@@ -31,6 +31,10 @@ RUN ./steamcmd.sh +login anonymous \
 +force_install_dir $VALHEIM_SERVER_DIR \
 +app_update $VALHEIM_SERVER_APP_ID \
 validate +exit
+
+# copy bepinex to the server root
+RUN cd $VALHEIM_SERVER_DIR && \
+curl -O https://gcdn.thunderstore.io/live/repository/packages/denikson-BepInExPack_Valheim-5.4.2202.zip
 
 # where world data is stored, map this to the host directory where your worlds are stored
 # e.g. docker run -v /path/to/host/directory:/home/steam/valheim-data
