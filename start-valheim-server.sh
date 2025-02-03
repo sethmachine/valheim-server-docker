@@ -32,7 +32,18 @@ function startValheimServer()
     if [ "${USE_BEPINEX}" = 1 ]
     then
         WARN "Using BepInEx modded valheim server!"
-        EXECUTABLE="./start_server_bepinex.sh"
+        # BepInEx-specific settings
+        # NOTE: Do not edit unless you know what you are doing!
+        ####
+        export DOORSTOP_ENABLE=TRUE
+        export DOORSTOP_INVOKE_DLL_PATH=./BepInEx/core/BepInEx.Preloader.dll
+        export DOORSTOP_CORLIB_OVERRIDE_PATH=./unstripped_corlib
+
+        export LD_LIBRARY_PATH="./doorstop_libs:$LD_LIBRARY_PATH"
+        export LD_PRELOAD="libdoorstop_x64.so:$LD_PRELOAD"
+        ####
+        export LD_LIBRARY_PATH="./linux64:$LD_LIBRARY_PATH"
+        export SteamAppId=892970
     fi
 
 
