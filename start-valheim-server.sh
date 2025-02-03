@@ -24,10 +24,21 @@ function startValheimServer()
         INFO "The Valheim server is set to public visibility.  It will be visible in the server list.  Players will still need to enter the password to join"
     fi
 
+    cp -r $VALHEIM_DATA_DIR/plugins $BEPINEX_PLUGINS_DIR
+
+    EXECUTABLE="./valheim_server.x86_64"
+
+    if [ "${USE_BEPINEX}" = 1 ]
+    then
+        WARN "Using BepInEx modded valheim server!"
+        EXECUTABLE="./start_server_bepinex.sh"
+    fi
+
+
     cd $VALHEIM_SERVER_DIR
     # start the server as a background process to get its PID ("&" at end of command)
     # "&>>" means append all stdout and stderr to the log file
-    ./valheim_server.x86_64 -name $VALHEIM_SERVER_NAME \
+    EXECUTABLE -name $VALHEIM_SERVER_NAME \
     -port $VALHEIM_PORT \
     -world $VALHEIM_WORLD_NAME \
     -password $VALHEIM_PASSWORD \

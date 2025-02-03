@@ -11,6 +11,8 @@ ENV STEAM_DIR "/home/steam/Steam"
 ENV STEAMCMD_DIR "/home/steam/steamcmd"
 # where the Valheim server is installed to
 ENV VALHEIM_SERVER_DIR "/home/steam/valheim-server"
+# where the Valheim server is installed to
+ENV BEPINEX_PLUGINS_DIR "/home/steam/valheim-server/BepInEx/plugins"
 # the Steam app ID that uniquely identifies the server
 ENV VALHEIM_SERVER_APP_ID 896660
 # 1 enables a one time check to update the Valheim server whenever it is first started
@@ -34,7 +36,10 @@ validate +exit
 
 # copy bepinex to the server root
 RUN cd $VALHEIM_SERVER_DIR && \
-curl -O https://gcdn.thunderstore.io/live/repository/packages/denikson-BepInExPack_Valheim-5.4.2202.zip
+curl -O https://gcdn.thunderstore.io/live/repository/packages/denikson-BepInExPack_Valheim-5.4.2202.zip && \
+unzip -d denikson-BepInExPack_Valheim-5.4.2202.zip bepinex-valheim && mv bepinex-valheim/BepInExPack_Valheim/* .
+
+RUN chmod u+x $VALHEIM_SERVER_DIR/start_server_bepinex.sh
 
 # where world data is stored, map this to the host directory where your worlds are stored
 # e.g. docker run -v /path/to/host/directory:/home/steam/valheim-data
@@ -48,6 +53,7 @@ ENV VALHEIM_WORLD_NAME=""
 ENV VALHEIM_PASSWORD "password"
 # 1 allows viewing the server in the public list; 0 hides it (must join by IP)
 ENV VALHEIM_SERVER_PUBLIC 1
+ENV USE_BEPINEX 0
 
 # the server needs these 3 ports exposed by default
 EXPOSE 2456/udp
