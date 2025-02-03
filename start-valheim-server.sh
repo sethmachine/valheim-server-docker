@@ -38,7 +38,7 @@ function startValheimServer()
     cd $VALHEIM_SERVER_DIR
     # start the server as a background process to get its PID ("&" at end of command)
     # "&>>" means append all stdout and stderr to the log file
-    EXECUTABLE -name $VALHEIM_SERVER_NAME \
+    "$EXECUTABLE" -name $VALHEIM_SERVER_NAME \
     -port $VALHEIM_PORT \
     -world $VALHEIM_WORLD_NAME \
     -password $VALHEIM_PASSWORD \
