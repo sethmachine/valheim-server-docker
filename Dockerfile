@@ -31,11 +31,22 @@ RUN cd ${STEAM_DIR} && git clone https://github.com/idelsink/b-log.git && apt-ge
 # changes the uuid and guid to 1000:1000, allowing for the files to save on GNU/Linux
 USER steam
 
+# Optional: pin to a Steam beta branch at build time (e.g. --build-arg VALHEIM_SERVER_BETA_BRANCH=default_old).
+# The value is baked into the image's ENV so the runtime update scripts use the same branch.
+ARG VALHEIM_SERVER_BETA_BRANCH=""
+
 # install the Valheim server
-RUN ./steamcmd.sh +login anonymous \
-+force_install_dir $VALHEIM_SERVER_DIR \
-+app_update $VALHEIM_SERVER_APP_ID \
-validate +exit
+RUN if [ -n "$VALHEIM_SERVER_BETA_BRANCH" ]; then \
+        ./steamcmd.sh +login anonymous \
+        +force_install_dir $VALHEIM_SERVER_DIR \
+        +app_update $VALHEIM_SERVER_APP_ID -beta "$VALHEIM_SERVER_BETA_BRANCH" \
+        validate +exit; \
+    else \
+        ./steamcmd.sh +login anonymous \
+        +force_install_dir $VALHEIM_SERVER_DIR \
+        +app_update $VALHEIM_SERVER_APP_ID \
+        validate +exit; \
+    fi
 
 # copy bepinex to the server root
 RUN cd $VALHEIM_SERVER_DIR && \
@@ -59,9 +70,8 @@ ENV VALHEIM_SERVER_PUBLIC 1
 ENV USE_BEPINEX 0
 # Opt in to the PlayFab backend so console and PC players can join together.
 ENV VALHEIM_SERVER_CROSSPLAY 0
-# Set to a Steam beta branch name (e.g. default_old) to pin the server to that version.
-# Leave empty to track the public/default branch.
-ENV VALHEIM_SERVER_BETA_BRANCH ""
+# Carries the build-arg value into the runtime environment so update scripts use the same branch.
+ENV VALHEIM_SERVER_BETA_BRANCH=${VALHEIM_SERVER_BETA_BRANCH}
 
 # the server needs these 3 ports exposed by default
 EXPOSE 2456/udp

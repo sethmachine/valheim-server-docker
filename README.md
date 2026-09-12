@@ -22,7 +22,7 @@ Enable `VALHEIM_SERVER_CROSSPLAY=1` to launch the server with `-crossplay` (the 
 
 **Known platform issue, checked September 12, 2026:** Iron Gate's [September 11 hotfix notice](https://www.valheimgame.com/news/hotfix-1-0-10-1-0-12/) says the Switch 2 patch could not be uploaded, so crossplay between Switch 2 and PS5/Xbox is temporarily unavailable with no current workaround.
 
-**Switch 2 + Steam workaround:** Switch 2 can still connect to Steam dedicated servers by opting both the server and Steam clients into the `default_old` beta branch. On each Steam client, right-click Valheim in your library → Properties → Game Versions & Betas → select `default_old`. For the dedicated server, set `VALHEIM_SERVER_BETA_BRANCH=default_old` and disable auto-update (`VALHEIM_SERVER_UPDATE_ON_START_UP=0`, `VALHEIM_SERVER_AUTO_UPDATE=0`) to prevent the server from updating back to the current public branch. Note that `default_old` runs without the latest hotfix bugfixes.
+**Switch 2 + Steam workaround:** Switch 2 can still connect to Steam dedicated servers by opting both the server and Steam clients into the `default_old` beta branch. On each Steam client, right-click Valheim in your library → Properties → Game Versions & Betas → select `default_old`. For the dedicated server, build the image with `--build-arg VALHEIM_SERVER_BETA_BRANCH=default_old` — this downloads that branch of the dedicated server at build time and bakes the branch name into the image so runtime update scripts stay on the same branch. Also set `VALHEIM_SERVER_AUTO_UPDATE=0` to prevent automatic updates back to the public branch. Note that `default_old` runs without the latest hotfix bugfixes.
 
 For a PC host already using this repository's Compose service:
 
