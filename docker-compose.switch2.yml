@@ -1,0 +1,16 @@
+# Merge with your EXISTING Compose file so the current world and data mount are retained.
+# Temporary September 2026 workaround; default_old is a moving Steam branch, not a version pin.
+services:
+  valheim:
+    image: valheim-server:switch2-local
+    build:
+      context: .
+      args:
+        VALHEIM_SERVER_BRANCH: default_old
+    stop_grace_period: 2m
+    environment:
+      VALHEIM_CROSSPLAY: "1"
+      VALHEIM_SERVER_BRANCH: default_old
+      VALHEIM_SERVER_UPDATE_ON_START_UP: "1"
+      VALHEIM_SERVER_AUTO_UPDATE: "0"
+      USE_BEPINEX: "0"

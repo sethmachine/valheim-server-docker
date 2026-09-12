@@ -10,6 +10,19 @@ source start-valheim-server.sh
 source update-valheim-server.sh
 source shutdown-valheim-server.sh
 
+VALHEIM_SERVER_BRANCH=${VALHEIM_SERVER_BRANCH:-public}
+VALHEIM_CROSSPLAY=${VALHEIM_CROSSPLAY:-0}
+if [[ ! "$VALHEIM_SERVER_BRANCH" =~ ^[a-zA-Z0-9_-]+$ ]]
+then
+    FATAL "VALHEIM_SERVER_BRANCH must contain only letters, digits, underscores or hyphens"
+    exit 1
+fi
+if [[ "$VALHEIM_CROSSPLAY" != 0 && "$VALHEIM_CROSSPLAY" != 1 ]]
+then
+    FATAL "VALHEIM_CROSSPLAY must be 0 or 1"
+    exit 1
+fi
+
 # server name and world name need to be defined at runtime
 if [ -z "${VALHEIM_SERVER_NAME}" ]
 then
@@ -26,7 +39,11 @@ fi
 if [ "${VALHEIM_SERVER_UPDATE_ON_START_UP}" = 1 ]
 then
     INFO "Attempting one time update of the Valheim server on start up"
-    updateValheimServerIfNewerBuildExists
+    if ! updateValheimServerIfNewerBuildExists
+    then
+        FATAL "Could not install or verify the requested Steam branch. Server will not start."
+        exit 1
+    fi
 fi
 
 function terminateUpdateLoop(){

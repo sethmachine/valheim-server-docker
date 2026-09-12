@@ -24,13 +24,19 @@ function startValheimServer()
         INFO "The Valheim server is set to public visibility.  It will be visible in the server list.  Players will still need to enter the password to join"
     fi
 
-    cp $VALHEIM_DATA_DIR/plugins/* $BEPINEX_PLUGINS_DIR
-    cp $VALHEIM_DATA_DIR/config/* $BEPINEX_CONFIG_DIR
+    local crossplayArgs=()
+    if [ "${VALHEIM_CROSSPLAY:-0}" = 1 ]
+    then
+        crossplayArgs=(-crossplay)
+        INFO "Crossplay enabled. Find the join code in the in-game pause menu or world log."
+    fi
 
     EXECUTABLE="./valheim_server.x86_64"
 
     if [ "${USE_BEPINEX}" = 1 ]
     then
+        cp "$VALHEIM_DATA_DIR"/plugins/* "$BEPINEX_PLUGINS_DIR"
+        cp "$VALHEIM_DATA_DIR"/config/* "$BEPINEX_CONFIG_DIR"
         WARN "Using BepInEx modded valheim server!"
         # BepInEx-specific settings
         # NOTE: Do not edit unless you know what you are doing!
@@ -47,22 +53,15 @@ function startValheimServer()
     fi
 
 
-    cd $VALHEIM_SERVER_DIR
+    cd "$VALHEIM_SERVER_DIR" || return 1
     # start the server as a background process to get its PID ("&" at end of command)
-    # "&>>" means append all stdout and stderr to the log file
-    CROSSPLAY_ARG=""
-    if [ "${VALHEIM_CROSSPLAY}" = 1 ]; then
-        INFO "Crossplay is enabled"
-        CROSSPLAY_ARG="-crossplay"
-    fi
-
-    "$EXECUTABLE" -name $VALHEIM_SERVER_NAME \
-    -port $VALHEIM_PORT \
-    -world $VALHEIM_WORLD_NAME \
-    -password $VALHEIM_PASSWORD \
-    -public $VALHEIM_SERVER_PUBLIC \
-    -savedir $VALHEIM_DATA_DIR \
-    $CROSSPLAY_ARG &>> "/home/steam/valheim-data/$VALHEIM_WORLD_NAME-logs.txt" &
+    # Append all stdout and stderr to the world log.
+    "$EXECUTABLE" -batchmode -nographics -name "$VALHEIM_SERVER_NAME" \
+    -port "$VALHEIM_PORT" \
+    -world "$VALHEIM_WORLD_NAME" \
+    -password "$VALHEIM_PASSWORD" \
+    -public "$VALHEIM_SERVER_PUBLIC" \
+    -savedir "$VALHEIM_DATA_DIR" "${crossplayArgs[@]}" >> "$VALHEIM_DATA_DIR/$VALHEIM_WORLD_NAME-logs.txt" 2>&1 &
     VALHEIM_SERVER_PID=$!
     INFO "Valheim server PID is: $VALHEIM_SERVER_PID"
 }
