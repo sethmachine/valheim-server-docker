@@ -37,8 +37,8 @@ validate +exit
 
 # copy bepinex to the server root
 RUN cd $VALHEIM_SERVER_DIR && \
-curl -O https://gcdn.thunderstore.io/live/repository/packages/denikson-BepInExPack_Valheim-5.4.2202.zip && \
-unzip denikson-BepInExPack_Valheim-5.4.2202.zip -d bepinex-valheim && mv bepinex-valheim/BepInExPack_Valheim/* .
+curl -L -o BepInExPack_Valheim-5.4.2350.zip https://thunderstore.io/package/download/denikson/BepInExPack_Valheim/5.4.2350/ && \
+unzip BepInExPack_Valheim-5.4.2350.zip -d bepinex-valheim && mv bepinex-valheim/BepInExPack_Valheim/* .
 
 RUN chmod u+x $VALHEIM_SERVER_DIR/start_server_bepinex.sh
 
@@ -55,6 +55,24 @@ ENV VALHEIM_PASSWORD "password"
 # 1 allows viewing the server in the public list; 0 hides it (must join by IP)
 ENV VALHEIM_SERVER_PUBLIC 1
 ENV USE_BEPINEX 0
+# World modifier preset (overrides individual modifiers): Normal, Casual, Easy, Hard, Hardcore, Immersive, Hammer
+ENV VALHEIM_PRESET ""
+# Individual world modifiers (leave empty to use server default)
+# Combat: veryeasy, easy, hard, veryhard
+ENV VALHEIM_MODIFIER_COMBAT ""
+# DeathPenalty: casual, veryeasy, easy, hard, hardcore
+ENV VALHEIM_MODIFIER_DEATHPENALTY ""
+# Resources: muchless, less, more, muchmore, most
+ENV VALHEIM_MODIFIER_RESOURCES ""
+# Raids: none, muchless, less, more, muchmore
+ENV VALHEIM_MODIFIER_RAIDS ""
+# Portals: casual, hard, veryhard
+ENV VALHEIM_MODIFIER_PORTALS ""
+# Boolean world modifier keys (set to 1 to enable): nobuildcost, playerevents, passivemobs, nomap
+ENV VALHEIM_SETKEY_NOBUILDCOST 0
+ENV VALHEIM_SETKEY_PLAYEREVENTS 0
+ENV VALHEIM_SETKEY_PASSIVEMOBS 0
+ENV VALHEIM_SETKEY_NOMAP 0
 
 # the server needs these 3 ports exposed by default
 EXPOSE 2456/udp

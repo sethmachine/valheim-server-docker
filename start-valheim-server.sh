@@ -47,6 +47,28 @@ function startValheimServer()
     fi
 
 
+    MODIFIER_ARGS=""
+    if [ -n "${VALHEIM_PRESET}" ]; then
+        INFO "Using world modifier preset: $VALHEIM_PRESET"
+        MODIFIER_ARGS="$MODIFIER_ARGS -preset $VALHEIM_PRESET"
+    fi
+    for KEY in COMBAT DEATHPENALTY RESOURCES RAIDS PORTALS; do
+        VAR="VALHEIM_MODIFIER_${KEY}"
+        VAL="${!VAR}"
+        if [ -n "$VAL" ]; then
+            INFO "World modifier $KEY=$VAL"
+            MODIFIER_ARGS="$MODIFIER_ARGS -modifier $KEY $VAL"
+        fi
+    done
+    for KEY in NOBUILDCOST PLAYEREVENTS PASSIVEMOBS NOMAP; do
+        VAR="VALHEIM_SETKEY_${KEY}"
+        VAL="${!VAR}"
+        if [ "${VAL}" = 1 ]; then
+            INFO "World setkey: ${KEY,,}"
+            MODIFIER_ARGS="$MODIFIER_ARGS -setkey ${KEY,,}"
+        fi
+    done
+
     cd $VALHEIM_SERVER_DIR
     # start the server as a background process to get its PID ("&" at end of command)
     # "&>>" means append all stdout and stderr to the log file
@@ -55,7 +77,8 @@ function startValheimServer()
     -world $VALHEIM_WORLD_NAME \
     -password $VALHEIM_PASSWORD \
     -public $VALHEIM_SERVER_PUBLIC \
-    -savedir $VALHEIM_DATA_DIR &>> "/home/steam/valheim-data/$VALHEIM_WORLD_NAME-logs.txt" &
+    -savedir $VALHEIM_DATA_DIR \
+    $MODIFIER_ARGS &>> "/home/steam/valheim-data/$VALHEIM_WORLD_NAME-logs.txt" &
     VALHEIM_SERVER_PID=$!
     INFO "Valheim server PID is: $VALHEIM_SERVER_PID"
 }
