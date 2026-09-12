@@ -1,1 +1,6 @@
 .git
+valheim-data/
+.env
+*.env
+*.patch
+__pycache__/

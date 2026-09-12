@@ -1,9 +1,8 @@
 FROM cm2network/steamcmd:latest
 
 USER root
-# Install PCREGREP (http://www.pcre.org/) to extract build IDs from the VDF format
-# PCREGREP allows for writing easy to understand regular expressions that can span multiple lines
-RUN apt-get update && apt-get install pcregrep -y && apt-get install git -y && apt-get install unzip
+# libpulse0 and libatomic1 are required by the Linux crossplay backend.
+RUN apt-get update && apt-get install -y --no-install-recommends git unzip libpulse0 libatomic1
 
 # where Steam is installed
 ENV STEAM_DIR "/home/steam/Steam"
@@ -16,6 +15,9 @@ ENV BEPINEX_PLUGINS_DIR "/home/steam/valheim-server/BepInEx/plugins"
 ENV BEPINEX_CONFIG_DIR "/home/steam/valheim-server/BepInEx/config"
 # the Steam app ID that uniquely identifies the server
 ENV VALHEIM_SERVER_APP_ID 896660
+# Steam release branch. Use default_old temporarily when console updates lag behind PC.
+ARG VALHEIM_SERVER_BRANCH=public
+ENV VALHEIM_SERVER_BRANCH=${VALHEIM_SERVER_BRANCH}
 # 1 enables a one time check to update the Valheim server whenever it is first started
 ENV VALHEIM_SERVER_UPDATE_ON_START_UP 1
 # 1 enables auto update; set to 0 to disable auto update
@@ -30,9 +32,8 @@ RUN cd ${STEAM_DIR} && git clone https://github.com/idelsink/b-log.git && apt-ge
 USER steam
 
 # install the Valheim server
-RUN ./steamcmd.sh +login anonymous \
-+force_install_dir $VALHEIM_SERVER_DIR \
-+app_update $VALHEIM_SERVER_APP_ID \
+RUN ./steamcmd.sh +force_install_dir "$VALHEIM_SERVER_DIR" +login anonymous \
++app_update "$VALHEIM_SERVER_APP_ID" -beta "$VALHEIM_SERVER_BRANCH" \
 validate +exit
 
 # copy bepinex to the server root
@@ -47,7 +48,7 @@ RUN chmod u+x $VALHEIM_SERVER_DIR/start_server_bepinex.sh
 ENV VALHEIM_DATA_DIR "/home/steam/valheim-data"
 # don't change the port unless you know what you are doing
 ENV VALHEIM_PORT 2456
-# server and world name are truncated after 1st white space
+# server and world names may contain spaces
 # you must set values to the server and world name otherwise the container will exit immediately
 ENV VALHEIM_SERVER_NAME=""
 ENV VALHEIM_WORLD_NAME=""
@@ -55,7 +56,7 @@ ENV VALHEIM_PASSWORD "password"
 # 1 allows viewing the server in the public list; 0 hides it (must join by IP)
 ENV VALHEIM_SERVER_PUBLIC 1
 ENV USE_BEPINEX 0
-# 1 enables crossplay (allows Xbox/Game Pass players to join); 0 for Steam-only
+# 1 enables PlayFab crossplay and join codes; 0 uses Steam-only networking.
 ENV VALHEIM_CROSSPLAY 0
 
 # the server needs these 3 ports exposed by default

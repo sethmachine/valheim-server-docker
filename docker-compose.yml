@@ -3,6 +3,7 @@ services:
   valheim:
     image: sethmachineio/valheim-server
     user: 1000:1000
+    stop_grace_period: 2m
     ports:
       - 2456:2456/udp
       - 2457:2457/udp

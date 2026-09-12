@@ -2,3 +2,7 @@
 .idea/
 dev/
 valheim-server/
+valheim-data/
+.env
+*.env
+__pycache__/
