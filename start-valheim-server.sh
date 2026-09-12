@@ -50,12 +50,19 @@ function startValheimServer()
     cd $VALHEIM_SERVER_DIR
     # start the server as a background process to get its PID ("&" at end of command)
     # "&>>" means append all stdout and stderr to the log file
+    CROSSPLAY_ARG=""
+    if [ "${VALHEIM_CROSSPLAY}" = 1 ]; then
+        INFO "Crossplay is enabled"
+        CROSSPLAY_ARG="-crossplay"
+    fi
+
     "$EXECUTABLE" -name $VALHEIM_SERVER_NAME \
     -port $VALHEIM_PORT \
     -world $VALHEIM_WORLD_NAME \
     -password $VALHEIM_PASSWORD \
     -public $VALHEIM_SERVER_PUBLIC \
-    -savedir $VALHEIM_DATA_DIR &>> "/home/steam/valheim-data/$VALHEIM_WORLD_NAME-logs.txt" &
+    -savedir $VALHEIM_DATA_DIR \
+    $CROSSPLAY_ARG &>> "/home/steam/valheim-data/$VALHEIM_WORLD_NAME-logs.txt" &
     VALHEIM_SERVER_PID=$!
     INFO "Valheim server PID is: $VALHEIM_SERVER_PID"
 }

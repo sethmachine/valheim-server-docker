@@ -55,6 +55,8 @@ ENV VALHEIM_PASSWORD "password"
 # 1 allows viewing the server in the public list; 0 hides it (must join by IP)
 ENV VALHEIM_SERVER_PUBLIC 1
 ENV USE_BEPINEX 0
+# 1 enables crossplay (allows Xbox/Game Pass players to join); 0 for Steam-only
+ENV VALHEIM_CROSSPLAY 0
 
 # the server needs these 3 ports exposed by default
 EXPOSE 2456/udp
