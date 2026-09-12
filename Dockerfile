@@ -3,7 +3,8 @@ FROM cm2network/steamcmd:steam-bookworm
 USER root
 # Install PCREGREP (http://www.pcre.org/) to extract build IDs from the VDF format
 # PCREGREP allows for writing easy to understand regular expressions that can span multiple lines
-RUN sed -i 's/^Types: deb$/Types: deb\nTrusted: yes/' /etc/apt/sources.list.d/debian.sources \
+RUN rm /etc/apt/apt.conf.d/docker-clean \
+    && sed -i 's/^Types: deb$/Types: deb\nTrusted: yes/' /etc/apt/sources.list.d/debian.sources \
     && apt-get update \
     && apt-get install -y ca-certificates pcregrep unzip
 
