@@ -1,4 +1,4 @@
-FROM cm2network/steamcmd:latest
+FROM cm2network/steamcmd:steam-bookworm
 
 USER root
 # Install PCREGREP (http://www.pcre.org/) to extract build IDs from the VDF format
