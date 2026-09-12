@@ -20,7 +20,9 @@ For a detailed guide on how automatic update works, see this newer guide: [Autom
 
 Enable `VALHEIM_SERVER_CROSSPLAY=1` to launch the server with `-crossplay` (the PlayFab backend). Without this argument, only Steam clients can join. Crossplay is opt-in; existing Docker CLI and Compose configurations keep their Steam-only behavior.
 
-**Known platform blocker, checked September 12, 2026:** Iron Gate's [September 11 hotfix notice](https://www.valheimgame.com/news/hotfix-1-0-10-1-0-12/) says the Switch 2 patch could not be uploaded and crossplay between Switch 2 and other platforms is temporarily unavailable. Enabling crossplay prepares the server, but cannot fix this game-version mismatch. Check that notice for updates and wait for compatible releases before testing a Switch connection. Do not downgrade an existing world to work around it.
+**Known platform issue, checked September 12, 2026:** Iron Gate's [September 11 hotfix notice](https://www.valheimgame.com/news/hotfix-1-0-10-1-0-12/) says the Switch 2 patch could not be uploaded, so crossplay between Switch 2 and PS5/Xbox is temporarily unavailable with no current workaround.
+
+**Switch 2 + Steam workaround:** Switch 2 can still connect to Steam dedicated servers by opting both the server and Steam clients into the `default_old` beta branch. On each Steam client, right-click Valheim in your library → Properties → Game Versions & Betas → select `default_old`. For the dedicated server, set `VALHEIM_SERVER_BETA_BRANCH=default_old` and disable auto-update (`VALHEIM_SERVER_UPDATE_ON_START_UP=0`, `VALHEIM_SERVER_AUTO_UPDATE=0`) to prevent the server from updating back to the current public branch. Note that `default_old` runs without the latest hotfix bugfixes.
 
 For a PC host already using this repository's Compose service:
 
@@ -84,6 +86,7 @@ your container after editing the config.
 | `VALHEIM_SERVER_PUBLIC`                 | 0 or 1                                    | 1                          |
 | `VALHEIM_SERVER_CROSSPLAY`              | 0 (Steam only) or 1 (crossplay)           | 0; crossplay override uses 1 |
 | `USE_BEPINEX`                          | 0 (vanilla) or 1 (modded)                 | 0                          |
+| `VALHEIM_SERVER_BETA_BRANCH`           | Steam beta branch name, e.g. `default_old` | "" (public/default branch) |
 | `VALHEIM_SERVER_UPDATE_ON_START_UP`     | 0 or 1                                    | 1                          |
 | `VALHEIM_SERVER_AUTO_UPDATE`            | 0 or 1                                    | 1                          |
 | `VALHEIM_SERVER_AUTO_UPDATE_FREQUENCY`  | [sleep number](https://man7.org/linux/man-pages/man1/sleep.1.html)     | "30m"                          |
@@ -117,6 +120,7 @@ The following environment parameters customize the server's runtime behavior. 2 
 * `VALHEIM_SERVER_PUBLIC`: allows the server to be listed in the public server list (enabled by default). A value of `0` hides it; use a join code for crossplay or an IP address for Steam-only play.
 * `VALHEIM_SERVER_CROSSPLAY`: set to `1` to enable crossplay with consoles and other PC storefronts; defaults to `0` (Steam only). Recreate the container after changing it. Use a join code for crossplay, including when public visibility is disabled.
 * `USE_BEPINEX`: set to `1` to enable BepInEx mods; defaults to `0`. Keep `0` for the supplied console configuration.
+* `VALHEIM_SERVER_BETA_BRANCH`: pin the server to a Steam beta branch (e.g. `default_old` for Switch 2 compatibility workaround). Defaults to empty (public/default branch). When set, disable `VALHEIM_SERVER_AUTO_UPDATE` and `VALHEIM_SERVER_UPDATE_ON_START_UP` to prevent the server from updating back to the public branch.
 * `VALHEIM_SERVER_UPDATE_ON_START_UP`: attempt to update the Valheim server each time the Docker container is started.  
 * `VALHEIM_SERVER_AUTO_UPDATE`: enables automatic update for the Valheim server.  Set to `0` to disable automatic update.  
 * `VALHEIM_SERVER_AUTO_UPDATE_FREQUENCY`: how frequent to check and perform an update if the server is outdated (default is "30m" or 30 minutes)

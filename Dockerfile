@@ -59,6 +59,9 @@ ENV VALHEIM_SERVER_PUBLIC 1
 ENV USE_BEPINEX 0
 # Opt in to the PlayFab backend so console and PC players can join together.
 ENV VALHEIM_SERVER_CROSSPLAY 0
+# Set to a Steam beta branch name (e.g. default_old) to pin the server to that version.
+# Leave empty to track the public/default branch.
+ENV VALHEIM_SERVER_BETA_BRANCH ""
 
 # the server needs these 3 ports exposed by default
 EXPOSE 2456/udp

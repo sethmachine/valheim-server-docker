@@ -43,7 +43,7 @@ function findAndSetRemoteValheimServerBuildId(){
     # First update the app info get the latest build IDs from the Steam remote
     INFO "Querying the remote server for the latest build ID for the Valheim server"
     local appInfo=$(/bin/bash $STEAMCMD_DIR/steamcmd.sh +login anonymous +app_info_update 1 +app_info_print 896660 +quit)
-    # Use a regex that looks for the build ID under the public branch
+    # Use a regex that looks for the build ID under the configured branch (default: public).
     # TODO: use a VDF parser, as the regex will easily break if the line order changes
     #                    "branches"
     #                {
@@ -51,7 +51,8 @@ function findAndSetRemoteValheimServerBuildId(){
     #                        {
     #                                "buildid"               "6437354"
     #
-    VALHEIM_SERVER_REMOTE_BUILD_ID=$(echo "$appInfo" | pcregrep -o1 -M '"branches".*\n*.*{\n*.*"public".*\n*.*{.*\n*.*"buildid".*"([0-9]+)"')
+    local branch="${VALHEIM_SERVER_BETA_BRANCH:-public}"
+    VALHEIM_SERVER_REMOTE_BUILD_ID=$(echo "$appInfo" | pcregrep -o1 -M "\"branches\".*\n*.*{\n*.*\"${branch}\".*\n*.*{.*\n*.*\"buildid\".*\"([0-9]+)\"")
 
     INFO "The remote server build ID is $VALHEIM_SERVER_REMOTE_BUILD_ID"
 }
@@ -67,7 +68,12 @@ function assertLocalBuildIsLatest(){
 
 function updateValheimServer(){
     INFO "Updating the Valheim server"
-    /bin/bash $STEAMCMD_DIR/steamcmd.sh +login anonymous +force_install_dir $VALHEIM_SERVER_DIR +app_update $VALHEIM_SERVER_APP_ID +quit
+    local betaArgs=()
+    if [[ -n "${VALHEIM_SERVER_BETA_BRANCH}" ]]; then
+        INFO "Using Steam beta branch: $VALHEIM_SERVER_BETA_BRANCH"
+        betaArgs=(-beta "$VALHEIM_SERVER_BETA_BRANCH")
+    fi
+    /bin/bash $STEAMCMD_DIR/steamcmd.sh +login anonymous +force_install_dir $VALHEIM_SERVER_DIR +app_update $VALHEIM_SERVER_APP_ID "${betaArgs[@]}" +quit
 }
 
 function updateValheimServerIfNewerBuildExists(){
