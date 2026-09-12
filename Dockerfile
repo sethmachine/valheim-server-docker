@@ -3,8 +3,7 @@ FROM cm2network/steamcmd:steam-bookworm
 USER root
 # Install PCREGREP (http://www.pcre.org/) to extract build IDs from the VDF format
 # PCREGREP allows for writing easy to understand regular expressions that can span multiple lines
-RUN apt-get update 2>&1 || true \
-    && apt-get install -y --allow-unauthenticated debian-archive-keyring \
+RUN cp /usr/share/keyrings/debian-archive-keyring.gpg /etc/apt/trusted.gpg.d/ \
     && apt-get update \
     && apt-get install -y ca-certificates pcregrep unzip
 
