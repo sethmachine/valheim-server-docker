@@ -24,8 +24,12 @@ function startValheimServer()
         INFO "The Valheim server is set to public visibility.  It will be visible in the server list.  Players will still need to enter the password to join"
     fi
 
-    cp $VALHEIM_DATA_DIR/plugins/* $BEPINEX_PLUGINS_DIR
-    cp $VALHEIM_DATA_DIR/config/* $BEPINEX_CONFIG_DIR
+    if [ -d "$VALHEIM_DATA_DIR/plugins" ] && [ "$(ls -A $VALHEIM_DATA_DIR/plugins 2>/dev/null)" ]; then
+        cp $VALHEIM_DATA_DIR/plugins/* $BEPINEX_PLUGINS_DIR
+    fi
+    if [ -d "$VALHEIM_DATA_DIR/config" ] && [ "$(ls -A $VALHEIM_DATA_DIR/config 2>/dev/null)" ]; then
+        cp $VALHEIM_DATA_DIR/config/* $BEPINEX_CONFIG_DIR
+    fi
 
     EXECUTABLE="./valheim_server.x86_64"
 
