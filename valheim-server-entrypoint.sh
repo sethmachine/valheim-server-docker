@@ -23,6 +23,15 @@ then
     exit 1
 fi
 
+# Reject typos before downloading updates or starting a Steam-only server by accident.
+case "${VALHEIM_SERVER_CROSSPLAY:-0}" in
+    0|1) ;;
+    *)
+        FATAL "VALHEIM_SERVER_CROSSPLAY must be 0 (Steam only) or 1 (crossplay)"
+        exit 1
+        ;;
+esac
+
 if [ "${VALHEIM_SERVER_UPDATE_ON_START_UP}" = 1 ]
 then
     INFO "Attempting one time update of the Valheim server on start up"

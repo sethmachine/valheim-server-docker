@@ -4,7 +4,7 @@ This repo provides a Dockerfile that builds an image which runs a Valheim server
 
 This repo now provides **automatic update** for the Valheim server.  If this feature is enabled, a running Valheim server can automatically update itself as new Valheim updates are released, allowing a server to truly run 24/7.  
 
-Note you will still need to forward and open ports 2456, 2457, and 2458 (UDP protocol) on the host machine for the server to be listed and accessible.
+Steam-only servers need UDP port forwarding (Valheim uses the configured port and port+1, normally 2456-2457). Crossplay uses a relay and does not require router port forwarding. The host still needs to allow the server's network traffic through its firewall.
 
 If you find this repo useful, I'd love to hear back in a note how you're using it.  If you use this repo to build on your own work, please provide a reference back to this repo's URL.
 
@@ -15,6 +15,45 @@ I also have written a complete guide here that covers how to set up your own ded
 For a detailed guide on how automatic update works, see this newer guide: [Automatic Update for Valheim Server](https://www.sethmachine.io/2021/02/11/host-valheim-with-docker/)
 
 ## Usage
+
+### Nintendo Switch 2 and other consoles
+
+Enable `VALHEIM_SERVER_CROSSPLAY=1` to launch the server with `-crossplay` (the PlayFab backend). Without this argument, only Steam clients can join. Crossplay is opt-in; existing Docker CLI and Compose configurations keep their Steam-only behavior.
+
+**Known platform blocker, checked September 12, 2026:** Iron Gate's [September 11 hotfix notice](https://www.valheimgame.com/news/hotfix-1-0-10-1-0-12/) says the Switch 2 patch could not be uploaded and crossplay between Switch 2 and other platforms is temporarily unavailable. Enabling crossplay prepares the server, but cannot fix this game-version mismatch. Check that notice for updates and wait for compatible releases before testing a Switch connection. Do not downgrade an existing world to work around it.
+
+For a PC host already using this repository's Compose service:
+
+1. Preserve the existing `VALHEIM_WORLD_NAME`, password, and host data-directory mount in `docker-compose.yml`. The sample `NewWorld`/`./valheim-data` values are for a new setup; do not replace a working server's settings with them. Back up the full mounted data directory while the server is stopped (including `worlds_local`, `worlds`, and permission files if present). Do not run a second container against the same world.
+2. Apply these source changes and build the crossplay image locally. The override keeps the base file's world, password, ports and volume settings, enables crossplay, and disables BepInEx. The published Docker Hub image is not updated by applying this patch.
+
+   ```bash
+   docker compose -f docker-compose.yml -f docker-compose.crossplay.yml build --pull valheim
+   docker compose stop -t 120 valheim
+   # Back up the existing mounted data directory here, while the server is stopped.
+   docker compose -f docker-compose.yml -f docker-compose.crossplay.yml up -d --no-deps --force-recreate valheim
+   ```
+
+   Run these commands in the same project directory used for the existing server. If it was started with a custom Compose project name (`-p`) or file, keep that project name and use the actual base file. If the existing server was started with `docker run`, use the Docker CLI instructions below instead; this Compose command will not replace it.
+
+3. Check the startup log for `Crossplay is enabled`. The actual game log contains PlayFab connection details and the join code:
+
+   ```bash
+   docker compose -f docker-compose.yml -f docker-compose.crossplay.yml logs --tail=100 valheim
+   docker compose -f docker-compose.yml -f docker-compose.crossplay.yml exec valheim sh -c 'tail -n 200 "$VALHEIM_DATA_DIR/$VALHEIM_WORLD_NAME-logs.txt"'
+   ```
+
+4. Once compatible game updates are available, use **Join Game → Add server** on the Switch 2, enter the server's current join code, then its password. Obtain a fresh code after a restart. Crossplay cannot connect via a local address such as `192.168.x.x` or `127.0.0.1`, even for a player on the host PC. The server must be running and the PC awake.
+
+For an existing **Docker CLI** setup, build with `docker build --pull -t valheim-server:crossplay-local .`, gracefully stop the old container with `docker stop -t 120 <container-name>`, and back up its mounted data. Recreate it from `valheim-server:crossplay-local` with the **same world, password, volume and other settings**, adding `--env VALHEIM_SERVER_CROSSPLAY=1 --env USE_BEPINEX=0`. Merely restarting the old container does not load a new image or environment variables. Preserve the stopped container until the replacement is confirmed working; do not start both against the same data.
+
+Both the server and clients must run compatible public-release versions. A server's Steam auto-update can arrive before a console patch. `VALHEIM_SERVER_UPDATE_ON_START_UP=0` and `VALHEIM_SERVER_AUTO_UPDATE=0` pause future updates of an existing container; they do not downgrade it or pin the game version in a newly built image.
+
+Consoles cannot install client mods. The supplied override sets `USE_BEPINEX=0`; if the world relies on modded content, use a separate unmodded world and data directory for console play instead of loading the modded world without its required mods. A nonempty `permittedlist.txt` also restricts who can join: the host must add the console player's actual ID from the game log if an allowlist is in use. Do not remove existing permissions to troubleshoot.
+
+See Iron Gate's [dedicated server guide](https://www.valheimgame.com/support/a-guide-to-dedicated-servers/), [crossplay FAQ](https://www.valheimgame.com/support/crossplay-faq/), and [1.0 FAQ](https://www.valheimgame.com/support/valheim-1-0-faq/).
+
+### Choose a launch method
 
 You have two possibilities to run the container:
 
@@ -43,6 +82,8 @@ your container after editing the config.
 | `VALHEIM_WORLD_NAME`        | Any string                                | "NewWorld"                 |
 | `VALHEIM_PASSWORD`          | Any string                                | "password"                 |
 | `VALHEIM_SERVER_PUBLIC`                 | 0 or 1                                    | 1                          |
+| `VALHEIM_SERVER_CROSSPLAY`              | 0 (Steam only) or 1 (crossplay)           | 0; crossplay override uses 1 |
+| `USE_BEPINEX`                          | 0 (vanilla) or 1 (modded)                 | 0                          |
 | `VALHEIM_SERVER_UPDATE_ON_START_UP`     | 0 or 1                                    | 1                          |
 | `VALHEIM_SERVER_AUTO_UPDATE`            | 0 or 1                                    | 1                          |
 | `VALHEIM_SERVER_AUTO_UPDATE_FREQUENCY`  | [sleep number](https://man7.org/linux/man-pages/man1/sleep.1.html)     | "30m"                          |
@@ -67,13 +108,15 @@ You'll need to mount a directory on the host machine to the image's volume speci
 
 The subdirectory `worlds` can be empty or not exist at all.
 
-There are 8 environment parameters to customize the server's runtime behavior.  2 of these are required to be set, otherwise the container will exit immediately.
+The following environment parameters customize the server's runtime behavior. 2 of these are required to be set, otherwise the container will exit immediately.
 
-* `VALHEIM_SERVER_NAME`: sets the server's name (**required**, truncated at first whitespace).
-* `VALHEIM_WORLD_NAME`: sets the world's name (**required**, truncated at first whitespace).
+* `VALHEIM_SERVER_NAME`: sets the server's name (**required**; spaces are supported).
+* `VALHEIM_WORLD_NAME`: sets the world's name (**required**; spaces are supported).
 * `VALHEIM_PASSWORD`: sets the server's password.
 * `VALHEIM_PORT`: sets the server's port (default is `2456`).  Recommended not to change this.
-* `VALHEIM_SERVER_PUBLIC`: allows the server to be listed in public server list (enable by default).  A value of `0` would mean the server is only joinable via IP.  
+* `VALHEIM_SERVER_PUBLIC`: allows the server to be listed in the public server list (enabled by default). A value of `0` hides it; use a join code for crossplay or an IP address for Steam-only play.
+* `VALHEIM_SERVER_CROSSPLAY`: set to `1` to enable crossplay with consoles and other PC storefronts; defaults to `0` (Steam only). Recreate the container after changing it. Use a join code for crossplay, including when public visibility is disabled.
+* `USE_BEPINEX`: set to `1` to enable BepInEx mods; defaults to `0`. Keep `0` for the supplied console configuration.
 * `VALHEIM_SERVER_UPDATE_ON_START_UP`: attempt to update the Valheim server each time the Docker container is started.  
 * `VALHEIM_SERVER_AUTO_UPDATE`: enables automatic update for the Valheim server.  Set to `0` to disable automatic update.  
 * `VALHEIM_SERVER_AUTO_UPDATE_FREQUENCY`: how frequent to check and perform an update if the server is outdated (default is "30m" or 30 minutes)

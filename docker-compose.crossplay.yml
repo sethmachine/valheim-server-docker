@@ -1,0 +1,10 @@
+# Apply after your existing Compose file to preserve its world, password and data mount.
+# Build the patched launcher locally; the published image may not contain these changes.
+services:
+  valheim:
+    build: .
+    image: valheim-server:crossplay-local
+    stop_grace_period: 2m
+    environment:
+      VALHEIM_SERVER_CROSSPLAY: "1"
+      USE_BEPINEX: "0"

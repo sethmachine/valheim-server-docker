@@ -3,7 +3,9 @@ FROM cm2network/steamcmd:latest
 USER root
 # Install PCREGREP (http://www.pcre.org/) to extract build IDs from the VDF format
 # PCREGREP allows for writing easy to understand regular expressions that can span multiple lines
-RUN apt-get update && apt-get install pcregrep -y && apt-get install git -y && apt-get install unzip
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    pcregrep git unzip libatomic1 libpulse0 \
+    && rm -rf /var/lib/apt/lists/*
 
 # where Steam is installed
 ENV STEAM_DIR "/home/steam/Steam"
@@ -55,8 +57,8 @@ ENV VALHEIM_PASSWORD "password"
 # 1 allows viewing the server in the public list; 0 hides it (must join by IP)
 ENV VALHEIM_SERVER_PUBLIC 1
 ENV USE_BEPINEX 0
-# 1 enables crossplay (allows Xbox/Game Pass players to join); 0 for Steam-only
-ENV VALHEIM_CROSSPLAY 0
+# Opt in to the PlayFab backend so console and PC players can join together.
+ENV VALHEIM_SERVER_CROSSPLAY 0
 
 # the server needs these 3 ports exposed by default
 EXPOSE 2456/udp
