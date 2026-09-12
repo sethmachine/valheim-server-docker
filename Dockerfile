@@ -3,7 +3,7 @@ FROM cm2network/steamcmd:steam-bookworm
 USER root
 # Install PCREGREP (http://www.pcre.org/) to extract build IDs from the VDF format
 # PCREGREP allows for writing easy to understand regular expressions that can span multiple lines
-RUN apt-get update && apt-get install pcregrep -y && apt-get install git -y && apt-get install unzip
+RUN apt-get update && apt-get install -y ca-certificates pcregrep unzip
 
 # where Steam is installed
 ENV STEAM_DIR "/home/steam/Steam"
@@ -24,7 +24,7 @@ ENV VALHEIM_SERVER_AUTO_UPDATE 1
 # For format: https://linuxize.com/post/how-to-use-linux-sleep-command-to-pause-a-bash-script/
 ENV VALHEIM_SERVER_AUTO_UPDATE_FREQUENCY "30m"
 
-RUN cd ${STEAM_DIR} && git clone https://github.com/idelsink/b-log.git && apt-get remove git -y && chown -R steam:steam b-log/
+RUN cd ${STEAM_DIR} && curl -L https://github.com/idelsink/b-log/archive/refs/heads/master.zip -o b-log.zip && unzip b-log.zip && mv b-log-master b-log && rm b-log.zip && chown -R steam:steam b-log/
 
 # changes the uuid and guid to 1000:1000, allowing for the files to save on GNU/Linux
 USER steam
