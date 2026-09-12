@@ -24,10 +24,33 @@ function startValheimServer()
         INFO "The Valheim server is set to public visibility.  It will be visible in the server list.  Players will still need to enter the password to join"
     fi
 
+    cp $VALHEIM_DATA_DIR/plugins/* $BEPINEX_PLUGINS_DIR
+    cp $VALHEIM_DATA_DIR/config/* $BEPINEX_CONFIG_DIR
+
+    EXECUTABLE="./valheim_server.x86_64"
+
+    if [ "${USE_BEPINEX}" = 1 ]
+    then
+        WARN "Using BepInEx modded valheim server!"
+        # BepInEx-specific settings
+        # NOTE: Do not edit unless you know what you are doing!
+        ####
+        export DOORSTOP_ENABLE=TRUE
+        export DOORSTOP_INVOKE_DLL_PATH=./BepInEx/core/BepInEx.Preloader.dll
+        export DOORSTOP_CORLIB_OVERRIDE_PATH=./unstripped_corlib
+
+        export LD_LIBRARY_PATH="./doorstop_libs:$LD_LIBRARY_PATH"
+        export LD_PRELOAD="libdoorstop_x64.so:$LD_PRELOAD"
+        ####
+        export LD_LIBRARY_PATH="./linux64:$LD_LIBRARY_PATH"
+        export SteamAppId=892970
+    fi
+
+
     cd $VALHEIM_SERVER_DIR
     # start the server as a background process to get its PID ("&" at end of command)
     # "&>>" means append all stdout and stderr to the log file
-    ./valheim_server.x86_64 -name $VALHEIM_SERVER_NAME \
+    "$EXECUTABLE" -name $VALHEIM_SERVER_NAME \
     -port $VALHEIM_PORT \
     -world $VALHEIM_WORLD_NAME \
     -password $VALHEIM_PASSWORD \

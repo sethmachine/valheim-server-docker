@@ -3,7 +3,7 @@ FROM cm2network/steamcmd:latest
 USER root
 # Install PCREGREP (http://www.pcre.org/) to extract build IDs from the VDF format
 # PCREGREP allows for writing easy to understand regular expressions that can span multiple lines
-RUN apt-get update && apt-get install pcregrep -y && apt-get install git -y
+RUN apt-get update && apt-get install pcregrep -y && apt-get install git -y && apt-get install unzip
 
 # where Steam is installed
 ENV STEAM_DIR "/home/steam/Steam"
@@ -11,6 +11,9 @@ ENV STEAM_DIR "/home/steam/Steam"
 ENV STEAMCMD_DIR "/home/steam/steamcmd"
 # where the Valheim server is installed to
 ENV VALHEIM_SERVER_DIR "/home/steam/valheim-server"
+# where the Valheim server is installed to
+ENV BEPINEX_PLUGINS_DIR "/home/steam/valheim-server/BepInEx/plugins"
+ENV BEPINEX_CONFIG_DIR "/home/steam/valheim-server/BepInEx/config"
 # the Steam app ID that uniquely identifies the server
 ENV VALHEIM_SERVER_APP_ID 896660
 # 1 enables a one time check to update the Valheim server whenever it is first started
@@ -32,6 +35,13 @@ RUN ./steamcmd.sh +login anonymous \
 +app_update $VALHEIM_SERVER_APP_ID \
 validate +exit
 
+# copy bepinex to the server root
+RUN cd $VALHEIM_SERVER_DIR && \
+curl -O https://gcdn.thunderstore.io/live/repository/packages/denikson-BepInExPack_Valheim-5.4.2202.zip && \
+unzip denikson-BepInExPack_Valheim-5.4.2202.zip -d bepinex-valheim && mv bepinex-valheim/BepInExPack_Valheim/* .
+
+RUN chmod u+x $VALHEIM_SERVER_DIR/start_server_bepinex.sh
+
 # where world data is stored, map this to the host directory where your worlds are stored
 # e.g. docker run -v /path/to/host/directory:/home/steam/valheim-data
 ENV VALHEIM_DATA_DIR "/home/steam/valheim-data"
@@ -44,6 +54,7 @@ ENV VALHEIM_WORLD_NAME=""
 ENV VALHEIM_PASSWORD "password"
 # 1 allows viewing the server in the public list; 0 hides it (must join by IP)
 ENV VALHEIM_SERVER_PUBLIC 1
+ENV USE_BEPINEX 0
 
 # the server needs these 3 ports exposed by default
 EXPOSE 2456/udp
@@ -51,6 +62,8 @@ EXPOSE 2457/udp
 EXPOSE 2458/udp
 
 VOLUME ${VALHEIM_DATA_DIR}
+VOLUME ${BEPINEX_CONFIG_DIR}
+VOLUME ${BEPINEX_PLUGINS_DIR}
 
 # copy over the scripts to start, update, and shutdown the server
 COPY --chown=steam valheim-server-entrypoint.sh ${VALHEIM_SERVER_DIR}
