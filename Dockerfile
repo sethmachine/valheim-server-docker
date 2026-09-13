@@ -57,6 +57,20 @@ ENV VALHEIM_SERVER_PUBLIC 1
 ENV USE_BEPINEX 0
 # 1 enables crossplay (allows Xbox/Game Pass players to join); 0 for Steam-only
 ENV VALHEIM_CROSSPLAY 0
+# World Modifiers — all optional, empty string means not applied
+# Preset: Normal, Casual, Easy, Hard, Hardcore, Immersive, Hammer
+ENV VALHEIM_PRESET ""
+# Individual modifiers (override or extend a preset)
+ENV VALHEIM_MODIFIER_COMBAT ""
+ENV VALHEIM_MODIFIER_DEATHPENALTY ""
+ENV VALHEIM_MODIFIER_RESOURCES ""
+ENV VALHEIM_MODIFIER_RAIDS ""
+ENV VALHEIM_MODIFIER_PORTALS ""
+# Setkeys: 1 to enable, 0 to disable
+ENV VALHEIM_SETKEY_NOBUILDCOST 0
+ENV VALHEIM_SETKEY_PLAYEREVENTS 0
+ENV VALHEIM_SETKEY_PASSIVEMOBS 0
+ENV VALHEIM_SETKEY_NOMAP 0
 
 # the server needs these 3 ports exposed by default
 EXPOSE 2456/udp
