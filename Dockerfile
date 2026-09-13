@@ -6,7 +6,7 @@ USER root
 RUN rm -f /etc/apt/apt.conf.d/docker-clean \
     && apt-get update \
     && apt-get install -y --no-install-recommends \
-       pcre2-utils git unzip libatomic1 libpulse0 \
+       pcre2-utils unzip libatomic1 libpulse0 \
     && rm -rf /var/lib/apt/lists/*
 
 # where Steam is installed
@@ -28,7 +28,10 @@ ENV VALHEIM_SERVER_AUTO_UPDATE 1
 # For format: https://linuxize.com/post/how-to-use-linux-sleep-command-to-pause-a-bash-script/
 ENV VALHEIM_SERVER_AUTO_UPDATE_FREQUENCY "30m"
 
-RUN cd ${STEAM_DIR} && git clone https://github.com/idelsink/b-log.git && apt-get remove git -y && chown -R steam:steam b-log/
+RUN cd ${STEAM_DIR} \
+    && curl -fsSL https://github.com/idelsink/b-log/archive/refs/heads/master.tar.gz \
+       | tar xz --strip-components=1 -C . --one-top-level=b-log \
+    && chown -R steam:steam b-log/
 
 # changes the uuid and guid to 1000:1000, allowing for the files to save on GNU/Linux
 USER steam
