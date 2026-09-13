@@ -6,7 +6,7 @@ USER root
 RUN rm -f /etc/apt/apt.conf.d/docker-clean \
     && apt-get update \
     && apt-get install -y --no-install-recommends \
-       pcregrep git unzip libatomic1 libpulse0 \
+       pcre2-utils git unzip libatomic1 libpulse0 \
     && rm -rf /var/lib/apt/lists/*
 
 # where Steam is installed

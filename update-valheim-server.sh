@@ -21,7 +21,7 @@ function findAndSetLocalValheimServerBuildId(){
         local previousLocalBuildId=$VALHEIM_SERVER_LOCAL_BUILD_ID
     fi
 
-    VALHEIM_SERVER_LOCAL_BUILD_ID=$(cat ${VALHEIM_SERVER_APP_MANIFEST} | pcregrep -o1 -M '"buildid".*"([0-9]+)"')
+    VALHEIM_SERVER_LOCAL_BUILD_ID=$(cat ${VALHEIM_SERVER_APP_MANIFEST} | pcre2grep -o1 -M '"buildid".*"([0-9]+)"')
 
     if [[ ! -z "${previousLocalBuildId}" ]] && [[ ${previousLocalBuildId} != ${VALHEIM_SERVER_LOCAL_BUILD_ID} ]]
     then
@@ -52,7 +52,7 @@ function findAndSetRemoteValheimServerBuildId(){
     #                                "buildid"               "6437354"
     #
     local branch="${VALHEIM_SERVER_BETA_BRANCH:-public}"
-    VALHEIM_SERVER_REMOTE_BUILD_ID=$(echo "$appInfo" | pcregrep -o1 -M "\"branches\".*\n*.*{\n*.*\"${branch}\".*\n*.*{.*\n*.*\"buildid\".*\"([0-9]+)\"")
+    VALHEIM_SERVER_REMOTE_BUILD_ID=$(echo "$appInfo" | pcre2grep -o1 -M "\"branches\".*\n*.*{\n*.*\"${branch}\".*\n*.*{.*\n*.*\"buildid\".*\"([0-9]+)\"")
 
     INFO "The remote server build ID is $VALHEIM_SERVER_REMOTE_BUILD_ID"
 }
