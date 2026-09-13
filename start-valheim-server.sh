@@ -56,13 +56,37 @@ function startValheimServer()
         CROSSPLAY_ARG="-crossplay"
     fi
 
+    # World modifier args — order matters: preset first, then -modifier, then -setkey
+    WORLD_MODIFIER_ARGS=""
+    if [ -n "${VALHEIM_PRESET}" ]; then
+        INFO "World preset: $VALHEIM_PRESET"
+        WORLD_MODIFIER_ARGS="$WORLD_MODIFIER_ARGS -preset $VALHEIM_PRESET"
+    fi
+    for modifier in combat deathpenalty resources raids portals; do
+        env_var="VALHEIM_MODIFIER_$(echo $modifier | tr '[:lower:]' '[:upper:]')"
+        value="${!env_var}"
+        if [ -n "$value" ]; then
+            INFO "World modifier $modifier: $value"
+            WORLD_MODIFIER_ARGS="$WORLD_MODIFIER_ARGS -modifier $modifier $value"
+        fi
+    done
+    for key in nobuildcost playerevents passivemobs nomap; do
+        env_var="VALHEIM_SETKEY_$(echo $key | tr '[:lower:]' '[:upper:]')"
+        value="${!env_var}"
+        if [ "${value}" = 1 ]; then
+            INFO "World setkey: $key"
+            WORLD_MODIFIER_ARGS="$WORLD_MODIFIER_ARGS -setkey $key"
+        fi
+    done
+
     "$EXECUTABLE" -name $VALHEIM_SERVER_NAME \
     -port $VALHEIM_PORT \
     -world $VALHEIM_WORLD_NAME \
     -password $VALHEIM_PASSWORD \
     -public $VALHEIM_SERVER_PUBLIC \
     -savedir $VALHEIM_DATA_DIR \
-    $CROSSPLAY_ARG &>> "/home/steam/valheim-data/$VALHEIM_WORLD_NAME-logs.txt" &
+    $CROSSPLAY_ARG \
+    $WORLD_MODIFIER_ARGS &>> "/home/steam/valheim-data/$VALHEIM_WORLD_NAME-logs.txt" &
     VALHEIM_SERVER_PID=$!
     INFO "Valheim server PID is: $VALHEIM_SERVER_PID"
 }

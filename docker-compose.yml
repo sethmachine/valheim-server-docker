@@ -17,3 +17,21 @@ services:
       - VALHEIM_SERVER_UPDATE_ON_START_UP=1
       - VALHEIM_SERVER_AUTO_UPDATE=1
       - VALHEIM_SERVER_AUTO_UPDATE_FREQUENCY=30m
+      # World Modifiers (all optional)
+      # Preset overrides individual modifiers; valid values: Normal, Casual, Easy, Hard, Hardcore, Immersive, Hammer
+      - VALHEIM_PRESET=
+      # combat: veryeasy, easy, hard, veryhard
+      - VALHEIM_MODIFIER_COMBAT=
+      # deathpenalty: casual, veryeasy, easy, hard, hardcore
+      - VALHEIM_MODIFIER_DEATHPENALTY=
+      # resources: muchless, less, more, muchmore, most
+      - VALHEIM_MODIFIER_RESOURCES=
+      # raids: none, muchless, less, more, muchmore
+      - VALHEIM_MODIFIER_RAIDS=
+      # portals: casual, hard, veryhard
+      - VALHEIM_MODIFIER_PORTALS=
+      # set to 1 to enable
+      - VALHEIM_SETKEY_NOBUILDCOST=0
+      - VALHEIM_SETKEY_PLAYEREVENTS=0
+      - VALHEIM_SETKEY_PASSIVEMOBS=0
+      - VALHEIM_SETKEY_NOMAP=0
