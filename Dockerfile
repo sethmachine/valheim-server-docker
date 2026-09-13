@@ -3,7 +3,8 @@ FROM cm2network/steamcmd:latest
 USER root
 # Install PCREGREP (http://www.pcre.org/) to extract build IDs from the VDF format
 # PCREGREP allows for writing easy to understand regular expressions that can span multiple lines
-RUN apt-get -o APT::Update::Post-Invoke="" update \
+RUN rm -f /etc/apt/apt.conf.d/docker-clean \
+    && apt-get update \
     && apt-get install -y --no-install-recommends \
        pcregrep git unzip libatomic1 libpulse0 \
     && rm -rf /var/lib/apt/lists/*
